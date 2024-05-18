@@ -18,19 +18,30 @@ public class item {
 
     private final ItemService itemService;
 
-    // /item
+//  /item
     @GetMapping
     public ResponseEntity<Response> getAll() {
         return ResponseEntity.ok(new Response(itemService.findAll()));
     }
 
-    // /item
+//  /item/search
     @GetMapping("/search")
     public ResponseEntity<Response> getById(RequestName name) {
         return ResponseEntity.ok(new Response(itemService.findByName(name.getName())));
     }
 
-    // /item
+/*  /item
+    {
+        "name":"name",
+        "cost":"12",
+        "storeID":"1",
+        "category":"big",
+        "detail":"detail"
+        "stock":"1",        // could be null
+        "sold":"1",         // could be null
+        "discount":"1"      // could be null
+    }
+ */
     @PostMapping
     public ResponseEntity<Response> add(@RequestBody Item item) {
         if (item.getName() == null ||
@@ -43,7 +54,7 @@ public class item {
         return ResponseEntity.ok(new Response(itemService.save(item)));
     }
 
-    // /item
+    // /item/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Response> delete(@PathVariable long id) {
         itemService.deleteById(id);

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class auth {
 
     private final AuthenticationService service;
-
-    // /api/v1/auth/register
-    // {
-    //    "name":"admin",
-    //    "password":"12345678",
-    //    "key":"password" if add key be admin
-    // }
+/*  /api/v1/auth/register
+    {
+        "name":"admin",
+        "password":"12345678",
+        "key":"password" if add key be admin
+    }
+ */
     @PostMapping("/register")
     public ResponseEntity<Response> register(@RequestBody RegisterRequest request) {
         if (request.getName() == null ||
@@ -32,11 +32,12 @@ public class auth {
         return ResponseEntity.ok(new Response(service.register(request)));
     }
 
-    // /api/v1/auth/authenticate
-    // {
-    //    "name":"admin",
-    //    "password":"12345678"
-    // }
+/*  /api/v1/auth/authenticate
+    {
+        "name":"admin",
+        "password":"12345678"
+    }
+ */
     @PostMapping("/authenticate")
     public ResponseEntity<Response> authenticate(@RequestBody AuthenticationRequest request) {
         if (request.getName() == null || request.getPassword() == null) return ResponseEntity.notFound().build();

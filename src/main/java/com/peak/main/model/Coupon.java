@@ -18,7 +18,6 @@ public class Coupon {
     private Long id;
     private String name;
     private Integer discount;
-
     private String image;
 
 }

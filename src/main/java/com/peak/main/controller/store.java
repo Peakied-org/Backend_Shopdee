@@ -17,16 +17,26 @@ public class store {
 
     private final StoreService storeService;
 
+//  /store
     @GetMapping
     public ResponseEntity<Response> getAll() {
         return ResponseEntity.ok(new Response(storeService.findAll()));
     }
 
+//  /store
     @GetMapping("/{id}")
     public ResponseEntity<Response> get(@RequestParam Long id) {
         return ResponseEntity.ok(new Response(storeService.findById(id)));
     }
 
+/*  /store
+    {
+        "name":"name",
+        "userID":"1",
+        "detail":"detail",
+        "image":"http"
+    }
+ */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     public ResponseEntity<Response> add(@RequestBody Store store) {
@@ -39,6 +49,7 @@ public class store {
         return ResponseEntity.ok(new Response(storeService.save(store)));
     }
 
+//  /store/{id}
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response> delete(@PathVariable Long id) {
