@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +76,7 @@ public class ItemService {
         Optional<Item> itemFound = findById(id);
         if (itemFound.isEmpty()) return null;
         Item item = getItem(updateItem, itemFound);
+        if (item == null) return null;
 
         itemRepository.save(item);
 
@@ -121,6 +121,7 @@ public class ItemService {
     }
 
     private static Item getItem(RequestItem updateItem, Optional<Item> itemFound) {
+        if (itemFound.isEmpty()) return null;
         Item item = itemFound.get();
 
         if (updateItem.getName() != null) item.setName(updateItem.getName());
