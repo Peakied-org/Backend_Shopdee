@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -71,11 +72,11 @@ public class ItemService {
         return newitem;
     }
 
-    public void deleteById(long id) {
-        itemRepository.deleteById(id);
+    public Optional<Item> findById(long id) {
+        return itemRepository.findById(id);
     }
 
-    public List<Item> findByName(String name) {
-        return itemRepository.findByName(name);
+    public void deleteById(long id) {
+        itemRepository.deleteById(id);
     }
 }

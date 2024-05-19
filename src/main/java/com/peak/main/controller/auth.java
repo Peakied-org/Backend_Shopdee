@@ -18,7 +18,10 @@ public class auth {
     {
         "name":"admin",
         "password":"12345678",
-        "key":"password" if add key be admin
+        "tel":"0999999999",
+        "address":"home",
+        "card_number":""        // could be null
+        "key":"password"        // if add key be admin
     }
  */
     @PostMapping("/register")

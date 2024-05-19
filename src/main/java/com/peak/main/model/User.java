@@ -1,7 +1,5 @@
 package com.peak.main.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.peak.Util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

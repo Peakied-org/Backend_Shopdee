@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "store")
@@ -17,4 +19,7 @@ public class Store {
     private Long userID;
     private String detail;
     private String image;
+
+    @OneToMany(mappedBy = "storeID", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Item> items;
 }
