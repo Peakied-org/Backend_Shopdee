@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -71,6 +72,66 @@ public class ItemService {
 
         return newitem;
     }
+    
+    public Item updateItem(RequestItem updateItem, long id) {
+        Optional<Item> itemFound = findById(id);
+        if (itemFound.isEmpty()) return null;
+        Item item = getItem(updateItem, itemFound);
+
+        itemRepository.save(item);
+
+        //////////////////////////  query type  //////////////////////////
+        List<String> newTypeNames = updateItem.getTypes();
+        List<Type> existingTypes = item.getTypes();
+
+        List<Type> typesToAdd = newTypeNames.stream()
+                .filter(typeName -> existingTypes.stream().noneMatch(type -> type.getType().equals(typeName)))
+                .map(typeName -> typeRepository.save(Type.builder().itemID(item.getId()).type(typeName).build()))
+                .toList();
+
+        List<Type> typesToRemove = existingTypes.stream()
+                .filter(type -> !newTypeNames.contains(type.getType()))
+                .toList();
+
+        typeRepository.deleteAll(typesToRemove);
+
+        existingTypes.removeAll(typesToRemove);
+        existingTypes.addAll(typesToAdd);
+
+        //////////////////////////  query image  //////////////////////////
+        List<String> newImageUrls = updateItem.getImages();
+        List<Image> existingImages = item.getImages();
+
+        List<Image> imagesToAdd = newImageUrls.stream()
+                .filter(imageUrl -> existingImages.stream().noneMatch(image -> image.getImage().equals(imageUrl)))
+                .map(imageUrl -> imageRepository.save(Image.builder().itemID(item.getId()).image(imageUrl).build()))
+                .toList();
+
+        List<Image> imagesToRemove = existingImages.stream()
+                .filter(image -> !newImageUrls.contains(image.getImage()))
+                .toList();
+
+        imageRepository.deleteAll(imagesToRemove);
+
+        existingImages.removeAll(imagesToRemove);
+        existingImages.addAll(imagesToAdd);
+
+        item.setImages(existingImages);
+        return item;
+    }
+
+    private static Item getItem(RequestItem updateItem, Optional<Item> itemFound) {
+        Item item = itemFound.get();
+
+        if (updateItem.getName() != null) item.setName(updateItem.getName());
+        if (updateItem.getDiscount() != null) item.setDiscount(updateItem.getDiscount());
+        if (updateItem.getCost() != null) item.setCost(updateItem.getCost());
+        if (updateItem.getCategory() != null) item.setCategory(updateItem.getCategory());
+        if (updateItem.getDetail() != null) item.setDetail(updateItem.getDetail());
+        if (updateItem.getStock() != null) item.setStock(updateItem.getStock());
+        if (updateItem.getSold() != null) item.setSold(updateItem.getSold());
+        return item;
+    }
 
     public Optional<Item> findById(long id) {
         return itemRepository.findById(id);
@@ -79,4 +140,6 @@ public class ItemService {
     public void deleteById(long id) {
         itemRepository.deleteById(id);
     }
+    
+    
 }

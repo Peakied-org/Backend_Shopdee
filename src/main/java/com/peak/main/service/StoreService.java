@@ -59,4 +59,8 @@ public class StoreService {
     public void deleteFromStore(long id) {
         itemService.deleteById(id);
     }
+
+    public Item updateItem(RequestItem newItem, long id) {
+        return itemService.updateItem(newItem, id);
+    }
 }

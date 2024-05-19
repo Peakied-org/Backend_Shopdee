@@ -34,11 +34,11 @@ public class Item {
     private Integer stock;
     private Integer sold;
 
-    @OneToMany(mappedBy = "itemID", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "itemID", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Type> types;
 
-    @OneToMany(mappedBy = "itemID", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "itemID", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Image> images;
 

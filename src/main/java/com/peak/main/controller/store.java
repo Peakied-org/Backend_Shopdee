@@ -98,6 +98,19 @@ public class store {
     }
 
 //  /store/{storeId}/item/{itemId}
+    @PutMapping("/{sid}/item/{iid}")
+    @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
+    public ResponseEntity<Response> updateItem(@PathVariable Long iid, @PathVariable Long sid, Authentication authentication, @RequestBody RequestItem newItem) {
+        User user = (User) authentication.getPrincipal();
+        if (!storeService.hasPermitionItem(sid, iid)) return ResponseEntity.status(403).build();
+
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), sid)) {
+            return ResponseEntity.ok(new Response(storeService.updateItem(newItem, iid)));
+        }
+        return ResponseEntity.status(403).build();
+    }
+
+//  /store/{storeId}/item/{itemId}
     @DeleteMapping("/{sid}/item/{iid}")
     @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
     public ResponseEntity<Response> delete(@PathVariable Long iid, @PathVariable Long sid, Authentication authentication) {
