@@ -28,7 +28,7 @@ public class store {
 
 //  /store
     @GetMapping("/{id}")
-    public ResponseEntity<Response> get(@RequestParam Long id) {
+    public ResponseEntity<Response> get(@PathVariable long id) {
         return ResponseEntity.ok(new Response(storeService.findById(id)));
     }
 

@@ -20,7 +20,6 @@ public class user {
 
 //  /api/v1/customers/me
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     public ResponseEntity<Response> getMe(Authentication authentication) {
         return ResponseEntity.ok(new Response(userService.findByName(authentication.getName())));
     }
@@ -34,14 +33,12 @@ public class user {
     }
  */
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     public ResponseEntity<Response> updateMe(@RequestBody RegisterRequest requestUpdate, Authentication authentication) {
         return ResponseEntity.ok().body(new Response(userService.update(userService.findByName(authentication.getName()), requestUpdate)));
     }
 
 //  /api/v1/customers/me
     @DeleteMapping("/me")
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     public ResponseEntity<Response> deleteCustomer(Authentication authentication) {
         userService.delete(authentication.getName());
         return ResponseEntity.ok(new Response("[]"));
