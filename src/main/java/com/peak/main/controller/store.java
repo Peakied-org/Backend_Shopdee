@@ -46,7 +46,8 @@ public class store {
         if (storeService.findByUserId(user.getId()).isPresent()) return ResponseEntity.ok(new Response("Already exists"));
         if (store.getName() == null ||
                 store.getDetail() == null ||
-                store.getImage() == null)
+                store.getImage() == null ||
+                store.getBanner() == null)
             return ResponseEntity.notFound().build();
         store.setUserID(user.getId());
 
@@ -81,7 +82,7 @@ public class store {
  */
     @PostMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
-    public ResponseEntity<Response> add(@PathVariable Long id, @RequestBody RequestItem item, Authentication authentication) {
+    public ResponseEntity<Response> addItem(@PathVariable Long id, @RequestBody RequestItem item, Authentication authentication) {
         if (item.getName() == null ||
                 item.getCost() == null ||
                 item.getCategory() == null ||

@@ -19,6 +19,7 @@ public class Store {
     private Long userID;
     private String detail;
     private String image;
+    private String banner;
 
     @OneToMany(mappedBy = "storeID", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Item> items;
