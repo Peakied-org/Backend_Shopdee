@@ -32,7 +32,7 @@ public class auth {
                 request.getAddress() == null)
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(new Response(service.register(request)));
+        return ResponseEntity.status(201).body(new Response(service.register(request)));
     }
 
 /*  /api/v1/auth/authenticate

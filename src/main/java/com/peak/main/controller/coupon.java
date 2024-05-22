@@ -36,7 +36,7 @@ public class coupon {
                 coupon.getImage() == null)
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(new Response(couponService.save(coupon)));
+        return ResponseEntity.status(201).body(new Response(couponService.save(coupon)));
     }
 
 //  /coupon/{id}

@@ -51,7 +51,7 @@ public class store {
             return ResponseEntity.notFound().build();
         store.setUserID(user.getId());
 
-        return ResponseEntity.ok(new Response(storeService.save(store)));
+        return ResponseEntity.status(201).body(new Response(storeService.save(store)));
     }
 
 //  /store/{id}
@@ -92,8 +92,7 @@ public class store {
         item.setStoreID(id);
 
         User user = (User) authentication.getPrincipal();
-        if (user.getRole().equals(Role.ADMIN)) return ResponseEntity.ok(new Response(storeService.saveToStore(item)));
-        if (storeService.hasPermitionStore(user.getId(), id)) return ResponseEntity.ok(new Response(storeService.saveToStore(item)));
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), id)) return ResponseEntity.status(201).body(new Response(storeService.saveToStore(item)));
 
         return ResponseEntity.status(403).build();
     }

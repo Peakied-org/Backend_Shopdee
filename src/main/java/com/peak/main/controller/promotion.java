@@ -33,7 +33,7 @@ public class promotion {
         if (promotion.getImage() == null)
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok(new Response(promotionService.save(promotion)));
+        return ResponseEntity.status(201).body(new Response(promotionService.save(promotion)));
     }
 
 //  /promotion
