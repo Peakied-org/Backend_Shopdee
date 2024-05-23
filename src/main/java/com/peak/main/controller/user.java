@@ -21,7 +21,8 @@ public class user {
 //  /api/v1/customers/me
     @GetMapping("/me")
     public ResponseEntity<Response> getMe(Authentication authentication) {
-        return ResponseEntity.ok(new Response(userService.findByName(authentication.getName())));
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(new Response(user));
     }
 
 /*  /api/v1/customers/me
@@ -34,13 +35,15 @@ public class user {
  */
     @PutMapping("/me")
     public ResponseEntity<Response> updateMe(@RequestBody RegisterRequest requestUpdate, Authentication authentication) {
-        return ResponseEntity.ok().body(new Response(userService.update(userService.findByName(authentication.getName()), requestUpdate)));
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok().body(new Response(userService.update(user, requestUpdate)));
     }
 
 //  /api/v1/customers/me
     @DeleteMapping("/me")
     public ResponseEntity<Response> deleteCustomer(Authentication authentication) {
-        userService.delete(authentication.getName());
+        User user = (User) authentication.getPrincipal();
+        userService.delete(user);
         return ResponseEntity.ok(new Response("[]"));
     }
 
@@ -75,10 +78,10 @@ public class user {
         "name":"name"
     }
  */
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response> delete(@RequestBody RegisterRequest requestUpdate) {
-        userService.delete(requestUpdate.getName());
-        return ResponseEntity.ok().body(new Response(""));
+    public ResponseEntity<Response> delete(@PathVariable Long id) {
+        userService.deleteById(id);
+        return ResponseEntity.ok().body(new Response("[]"));
     }
 }
