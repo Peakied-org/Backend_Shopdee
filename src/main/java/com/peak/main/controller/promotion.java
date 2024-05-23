@@ -2,7 +2,6 @@ package com.peak.main.controller;
 
 import com.peak.main.Request.Response;
 import com.peak.main.model.Promotion;
-import com.peak.main.repository.PromotionRespository;
 import com.peak.main.service.PromotionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

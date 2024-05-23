@@ -3,7 +3,6 @@ package com.peak.main.repository;
 import com.peak.main.model.OrderDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long> {

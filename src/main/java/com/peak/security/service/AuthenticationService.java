@@ -1,6 +1,5 @@
 package com.peak.security.service;
 
-
 import com.peak.Util.Role;
 import com.peak.main.model.User;
 import com.peak.main.repository.UserRepository;
@@ -13,8 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
