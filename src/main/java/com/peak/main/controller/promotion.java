@@ -31,7 +31,7 @@ public class promotion {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response> create(@RequestBody Promotion promotion) {
         if (promotion.getImage() == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
 
         return ResponseEntity.status(201).body(new Response(promotionService.save(promotion)));
     }

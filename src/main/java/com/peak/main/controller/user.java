@@ -64,7 +64,7 @@ public class user {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response> update(@RequestBody RegisterRequest requestUpdate) {
         User customer = userService.findByName(requestUpdate.getName());
-        if (customer == null) return ResponseEntity.notFound().build();
+        if (customer == null) return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok().body(new Response(userService.update(customer, requestUpdate)));
     }

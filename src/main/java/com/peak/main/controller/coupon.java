@@ -34,7 +34,7 @@ public class coupon {
         if (coupon.getName() == null ||
                 coupon.getDiscount() == null ||
                 coupon.getImage() == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
 
         return ResponseEntity.status(201).body(new Response(couponService.save(coupon)));
     }

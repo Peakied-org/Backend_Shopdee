@@ -30,7 +30,7 @@ public class auth {
                 request.getPassword() == null ||
                 request.getTel() == null ||
                 request.getAddress() == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
 
         return ResponseEntity.status(201).body(new Response(service.register(request)));
     }
@@ -43,7 +43,7 @@ public class auth {
  */
     @PostMapping("/authenticate")
     public ResponseEntity<Response> authenticate(@RequestBody AuthenticationRequest request) {
-        if (request.getName() == null || request.getPassword() == null) return ResponseEntity.notFound().build();
+        if (request.getName() == null || request.getPassword() == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(new Response(service.authenticate(request)));
     }
 }

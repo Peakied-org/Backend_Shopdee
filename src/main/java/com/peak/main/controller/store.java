@@ -48,7 +48,7 @@ public class store {
                 store.getDetail() == null ||
                 store.getImage() == null ||
                 store.getBanner() == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         store.setUserID(user.getId());
 
         return ResponseEntity.status(201).body(new Response(storeService.save(store)));
@@ -76,7 +76,7 @@ public class store {
         "stock":"1",            // could be null
         "sold":"1",             // could be null
         "discount":"1"          // could be null
-        "types":["red","blue"],  // could be null
+        "types":["red","blue"], // could be null
         "images":["image1"]     // could be null
     }
  */
@@ -87,10 +87,11 @@ public class store {
                 item.getCost() == null ||
                 item.getCategory() == null ||
                 item.getDetail() == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
 
         item.setStoreID(id);
 
+        if (storeService.findById(id).isEmpty()) return ResponseEntity.badRequest().build();
         User user = (User) authentication.getPrincipal();
         if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), id)) return ResponseEntity.status(201).body(new Response(storeService.saveToStore(item)));
 
@@ -98,26 +99,24 @@ public class store {
     }
 
 //  /store/{storeId}/item/{itemId}
-    @PutMapping("/{sid}/item/{iid}")
+    @PutMapping("/item/{iid}")
     @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
-    public ResponseEntity<Response> updateItem(@PathVariable Long iid, @PathVariable Long sid, Authentication authentication, @RequestBody RequestItem newItem) {
+    public ResponseEntity<Response> updateItem(@PathVariable Long iid, Authentication authentication, @RequestBody RequestItem newItem) {
         User user = (User) authentication.getPrincipal();
-        if (!storeService.hasPermitionItem(sid, iid)) return ResponseEntity.status(403).build();
 
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), sid)) {
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionItem(user.getId(), iid)) {
             return ResponseEntity.ok(new Response(storeService.updateItem(newItem, iid)));
         }
         return ResponseEntity.status(403).build();
     }
 
-//  /store/{storeId}/item/{itemId}
-    @DeleteMapping("/{sid}/item/{iid}")
+//  /store/item/{itemId}
+    @DeleteMapping("/item/{iid}")
     @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
-    public ResponseEntity<Response> delete(@PathVariable Long iid, @PathVariable Long sid, Authentication authentication) {
+    public ResponseEntity<Response> deleteItem(@PathVariable Long iid, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        if (!storeService.hasPermitionItem(sid, iid)) return ResponseEntity.status(403).build();
 
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), sid)) {
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionItem(user.getId(), iid)) {
             storeService.deleteFromStore(iid);
             return ResponseEntity.ok(new Response("[]"));
         }

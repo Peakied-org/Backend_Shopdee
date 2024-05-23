@@ -46,10 +46,12 @@ public class StoreService {
         return store.get().getId().equals(storeID);
     }
 
-    public boolean hasPermitionItem(long storeID, long itemID) {
+    public boolean hasPermitionItem(long userID, long itemID) {
         Optional<Item> item = itemService.findById(itemID);
         if (item.isEmpty()) return false;
-        return item.get().getStoreID().equals(storeID);
+        Optional<Store> store = storeRepository.findById(item.get().getStoreID());
+        if (store.isEmpty()) return false;
+        return store.get().getUserID().equals(userID);
     }
 
     public Item saveToStore(RequestItem item) {
