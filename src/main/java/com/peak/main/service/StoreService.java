@@ -1,6 +1,6 @@
 package com.peak.main.service;
 
-import com.peak.main.Request.RequestItem;
+import com.peak.main.request.RequestItem;
 import com.peak.main.model.Item;
 import com.peak.main.model.Store;
 import com.peak.main.repository.StoreRepository;
@@ -42,16 +42,14 @@ public class StoreService {
 
     public boolean hasPermitionStore(long userID, long storeID) {
         Optional<Store> store = storeRepository.findByUserID(userID);
-        if (store.isEmpty()) return false;
-        return store.get().getId().equals(storeID);
+        return store.map(value -> value.getId().equals(storeID)).orElse(false);
     }
 
     public boolean hasPermitionItem(long userID, long itemID) {
         Optional<Item> item = itemService.findById(itemID);
         if (item.isEmpty()) return false;
         Optional<Store> store = storeRepository.findById(item.get().getStoreID());
-        if (store.isEmpty()) return false;
-        return store.get().getUserID().equals(userID);
+        return store.map(value -> value.getUserID().equals(userID)).orElse(false);
     }
 
     public Item saveToStore(RequestItem item) {

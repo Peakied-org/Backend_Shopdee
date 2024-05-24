@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private Role role;
     private String tel;
     private String address;
-    private String card_number;
+    private String cardNumber;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

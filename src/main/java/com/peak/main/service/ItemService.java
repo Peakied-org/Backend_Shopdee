@@ -1,6 +1,6 @@
 package com.peak.main.service;
 
-import com.peak.main.Request.RequestItem;
+import com.peak.main.request.RequestItem;
 import com.peak.main.model.Image;
 import com.peak.main.model.Item;
 import com.peak.main.model.Type;
@@ -57,10 +57,10 @@ public class ItemService {
 
         List<Image> images = new ArrayList<>();
         if (item.getImages() != null) {
-            item.getImages().forEach(image -> {
+            item.getImages().forEach(link -> {
                 Image newImage = Image.builder()
                         .itemID(newitem.getId())
-                        .image(image)
+                        .link(link)
                         .build();
                 images.add(newImage);
                 imageRepository.save(newImage);
@@ -103,12 +103,12 @@ public class ItemService {
         List<Image> existingImages = item.getImages();
 
         List<Image> imagesToAdd = newImageUrls.stream()
-                .filter(imageUrl -> existingImages.stream().noneMatch(image -> image.getImage().equals(imageUrl)))
-                .map(imageUrl -> imageRepository.save(Image.builder().itemID(item.getId()).image(imageUrl).build()))
+                .filter(imageUrl -> existingImages.stream().noneMatch(image -> image.getLink().equals(imageUrl)))
+                .map(imageUrl -> imageRepository.save(Image.builder().itemID(item.getId()).link(imageUrl).build()))
                 .toList();
 
         List<Image> imagesToRemove = existingImages.stream()
-                .filter(image -> !newImageUrls.contains(image.getImage()))
+                .filter(image -> !newImageUrls.contains(image.getLink()))
                 .toList();
 
         imageRepository.deleteAll(imagesToRemove);

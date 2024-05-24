@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -38,14 +37,13 @@ public class Item {
     @JsonIgnore
     private List<Image> images;
 
-//  to output ez use
     @JsonProperty("types")
     public List<String> getType() {
-        return types.stream().map(Type::getType).collect(Collectors.toList());
+        return types.stream().map(Type::getType).toList();
     }
 
     @JsonProperty("images")
     public List<String> getImage() {
-        return images.stream().map(Image::getImage).collect(Collectors.toList());
+        return images.stream().map(Image::getLink).toList();
     }
 }

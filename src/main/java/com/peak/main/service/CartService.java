@@ -8,22 +8,20 @@ import com.peak.main.repository.CartDetailsRepository;
 import com.peak.main.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Service
+@AllArgsConstructor
 public class CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    @Autowired
-    private CartDetailsRepository cartDetailsRepository;
+    private final CartDetailsRepository cartDetailsRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
     public Cart getCartsByUserId(Long userId) {
         return cartRepository.findByUserID(userId);

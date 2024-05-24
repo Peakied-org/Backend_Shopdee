@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     @Value("${ADMIN_KEY}")
-    private String ADMIN_KEY;
+    private String adminKey;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -34,11 +34,11 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .tel(request.getTel())
                 .address(request.getAddress())
-                .card_number(request.getCard_number())
+                .cardNumber(request.getCard_number())
                 .build();
 
         if (request.getCard_number() != null) user.setRole(Role.SELLER);
-        if (request.getKey() != null && request.getKey().equals(ADMIN_KEY)) user.setRole(Role.ADMIN);
+        if (request.getKey() != null && request.getKey().equals(adminKey)) user.setRole(Role.ADMIN);
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);

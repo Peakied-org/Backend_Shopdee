@@ -5,25 +5,23 @@ import com.peak.main.model.*;
 import com.peak.main.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
 
-    @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private StoreRepository storeRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final StoreRepository storeRepository;
+
+    private final CartRepository cartRepository;
 
     // For ADMIN
     public List<Order> getAllOrders() {
@@ -56,22 +54,27 @@ public class OrderService {
         Order savedOrder = orderRepository.save(newOrder);
 
         for (CartDetails cartDetail : cart.getCartDetails()) {
-            OrderDetails orderDetail = new OrderDetails();
-            orderDetail.setName(cartDetail.getName());
-            orderDetail.setQuantity(cartDetail.getQuantity());
-            orderDetail.setCost(cartDetail.getCost());
-            orderDetail.setImage(cartDetail.getImage());
-            orderDetail.setOrderID(savedOrder.getId());
-            orderDetail.setStoreID(cartDetail.getStoreID());
-            orderDetail.setItemID(cartDetail.getItemID());
-            orderDetail.setStatus(Status.ORDER);
-            orderDetail.setType(cartDetail.getType());
+            OrderDetails orderDetail = getOrderDetails(cartDetail, savedOrder);
             orderDetailsRepository.save(orderDetail);
         }
         List<OrderDetails> savedOrderDetails = orderDetailsRepository.findByOrderID(savedOrder.getId());
         cartRepository.delete(cart);
         savedOrder.setOrderDetails(savedOrderDetails);
         return savedOrder;
+    }
+
+    private static OrderDetails getOrderDetails(CartDetails cartDetail, Order savedOrder) {
+        OrderDetails orderDetail = new OrderDetails();
+        orderDetail.setName(cartDetail.getName());
+        orderDetail.setQuantity(cartDetail.getQuantity());
+        orderDetail.setCost(cartDetail.getCost());
+        orderDetail.setImage(cartDetail.getImage());
+        orderDetail.setOrderID(savedOrder.getId());
+        orderDetail.setStoreID(cartDetail.getStoreID());
+        orderDetail.setItemID(cartDetail.getItemID());
+        orderDetail.setStatus(Status.ORDER);
+        orderDetail.setType(cartDetail.getType());
+        return orderDetail;
     }
 
     @Transactional
