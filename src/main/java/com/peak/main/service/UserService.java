@@ -30,7 +30,7 @@ public class UserService {
         if (newUser.getPassword() != null) oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         if (newUser.getTel() != null) oldUser.setTel(newUser.getTel());
         if (newUser.getAddress() != null) oldUser.setAddress(newUser.getAddress());
-        if (newUser.getCard_number() != null) oldUser.setCardNumber(newUser.getCard_number());
+        if (newUser.getCardNumber() != null) oldUser.setCardNumber(newUser.getCardNumber());
         return userRepository.save(oldUser);
     }
 

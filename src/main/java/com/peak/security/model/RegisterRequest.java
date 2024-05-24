@@ -14,6 +14,6 @@ public class RegisterRequest {
     private String password;
     private String tel;
     private String address;
-    private String card_number;
+    private String cardNumber;
     private String key;
 }

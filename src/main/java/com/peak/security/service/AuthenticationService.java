@@ -34,10 +34,10 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .tel(request.getTel())
                 .address(request.getAddress())
-                .cardNumber(request.getCard_number())
+                .cardNumber(request.getCardNumber())
                 .build();
 
-        if (request.getCard_number() != null) user.setRole(Role.SELLER);
+        if (request.getCardNumber() != null) user.setRole(Role.SELLER);
         if (request.getKey() != null && request.getKey().equals(adminKey)) user.setRole(Role.ADMIN);
 
         userRepository.save(user);
