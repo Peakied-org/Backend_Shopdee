@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cart")
 @AllArgsConstructor
-public class Cart {
+public class CartControl {
 
     private final CartService cartService;
 

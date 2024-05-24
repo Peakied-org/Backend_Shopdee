@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/item")
 @AllArgsConstructor
-public class Item {
+public class ItemControl {
 
     private final ItemService itemService;
 
@@ -18,8 +18,8 @@ public class Item {
         return ResponseEntity.ok(new Response(itemService.findAll()));
     }
 
-    @GetMapping
-    public ResponseEntity<Response> getById(@RequestParam int id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Response> getById(@PathVariable int id) {
         return ResponseEntity.ok(new Response(itemService.findById(id)));
     }
 }
