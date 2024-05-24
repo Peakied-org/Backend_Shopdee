@@ -1,6 +1,6 @@
 package com.peak.main.controller;
 
-import com.peak.Util.Role;
+import com.peak.util.Role;
 import com.peak.main.request.RequestItem;
 import com.peak.main.request.Response;
 import com.peak.main.model.User;

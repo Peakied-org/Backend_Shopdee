@@ -1,6 +1,6 @@
 package com.peak.main.model;
 
-import com.peak.Util.Status;
+import com.peak.util.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 

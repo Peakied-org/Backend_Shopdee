@@ -1,6 +1,6 @@
 package com.peak.main.model;
 
-import com.peak.Util.Role;
+import com.peak.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

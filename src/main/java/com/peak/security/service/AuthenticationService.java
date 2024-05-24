@@ -1,6 +1,6 @@
 package com.peak.security.service;
 
-import com.peak.Util.Role;
+import com.peak.util.Role;
 import com.peak.main.model.User;
 import com.peak.main.repository.UserRepository;
 import com.peak.security.model.RegisterRequest;

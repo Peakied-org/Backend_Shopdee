@@ -1,7 +1,7 @@
 package com.peak.main.controller;
 
-import com.peak.Util.Role;
-import com.peak.Util.Status;
+import com.peak.util.Role;
+import com.peak.util.Status;
 import com.peak.main.request.Response;
 import com.peak.main.model.OrderDetails;
 import com.peak.main.model.User;

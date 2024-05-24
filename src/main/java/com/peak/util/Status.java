@@ -1,4 +1,4 @@
-package com.peak.Util;
+package com.peak.util;
 
 public enum Status {
     ORDER,
