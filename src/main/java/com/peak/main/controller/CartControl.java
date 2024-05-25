@@ -37,7 +37,7 @@ public class CartControl {
                 throw new IllegalArgumentException("Invalid quantity. Quantity must be greater than 0.");
             }
             com.peak.main.model.Cart updatedCart = cartService.addToCart(user.getId(), itemId, quantity, type);
-            return ResponseEntity.ok(new Response(updatedCart));
+            return  ResponseEntity.status(201).body(new Response(updatedCart));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Item not found with ID: " + itemId));
         } catch (IllegalArgumentException e) {

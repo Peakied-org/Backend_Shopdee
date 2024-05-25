@@ -53,7 +53,7 @@ public class OrderControl {
         try {
             User user = (User) authentication.getPrincipal();
             com.peak.main.model.Order order = orderService.createOrderFromCart(user.getId());
-            return ResponseEntity.ok(new Response(order));
+            return  ResponseEntity.status(201).body(new Response(order));
         } catch (EntityNotFoundException | IllegalArgumentException ex) {
             return ResponseEntity.status(ex instanceof EntityNotFoundException ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST)
                     .body(new Response(ex.getMessage()));
