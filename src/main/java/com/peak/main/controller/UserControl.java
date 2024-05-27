@@ -1,5 +1,6 @@
 package com.peak.main.controller;
 
+import com.peak.main.model.User;
 import com.peak.main.service.UserService;
 import com.peak.security.model.RegisterRequest;
 import com.peak.main.request.Response;
@@ -19,19 +20,19 @@ public class UserControl {
 
     @GetMapping("/me")
     public ResponseEntity<Response> getMe(Authentication authentication) {
-        com.peak.main.model.User user = (com.peak.main.model.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok(new Response(user));
     }
 
     @PutMapping("/me")
     public ResponseEntity<Response> updateMe(@RequestBody RegisterRequest requestUpdate, Authentication authentication) {
-        com.peak.main.model.User user = (com.peak.main.model.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok().body(new Response(userService.update(user, requestUpdate)));
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Response> deleteCustomer(Authentication authentication) {
-        com.peak.main.model.User user = (com.peak.main.model.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         userService.delete(user);
         return ResponseEntity.ok(new Response("[]"));
     }
@@ -45,7 +46,7 @@ public class UserControl {
     @PutMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Response> update(@RequestBody RegisterRequest requestUpdate) {
-        com.peak.main.model.User customer = userService.findByName(requestUpdate.getName());
+        User customer = userService.findByName(requestUpdate.getName());
         if (customer == null) return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok().body(new Response(userService.update(customer, requestUpdate)));

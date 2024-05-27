@@ -1,5 +1,6 @@
 package com.peak.main.controller;
 
+import com.peak.main.model.Order;
 import com.peak.util.Role;
 import com.peak.util.Status;
 import com.peak.main.request.Response;
@@ -52,7 +53,7 @@ public class OrderControl {
     public ResponseEntity<Response> createOrderFromCart(Authentication authentication) {
         try {
             User user = (User) authentication.getPrincipal();
-            com.peak.main.model.Order order = orderService.createOrderFromCart(user.getId());
+            Order order = orderService.createOrderFromCart(user.getId());
             return  ResponseEntity.status(201).body(new Response(order));
         } catch (EntityNotFoundException | IllegalArgumentException ex) {
             return ResponseEntity.status(ex instanceof EntityNotFoundException ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST)

@@ -1,5 +1,6 @@
 package com.peak.main.controller;
 
+import com.peak.main.model.Store;
 import com.peak.util.Role;
 import com.peak.main.request.RequestItem;
 import com.peak.main.request.Response;
@@ -31,7 +32,7 @@ public class StoreControl {
 
     @PostMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    public ResponseEntity<Response> add(@RequestBody com.peak.main.model.Store store, Authentication authentication) {
+    public ResponseEntity<Response> add(@RequestBody Store store, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         if (storeService.findByUserId(user.getId()).isPresent()) return ResponseEntity.ok(new Response("Already exists"));
         if (store.getName() == null ||

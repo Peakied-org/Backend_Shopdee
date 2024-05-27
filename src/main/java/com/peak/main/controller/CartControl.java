@@ -1,5 +1,6 @@
 package com.peak.main.controller;
 
+import com.peak.main.model.Cart;
 import com.peak.main.request.Response;
 import com.peak.main.model.User;
 import com.peak.main.service.CartService;
@@ -20,7 +21,7 @@ public class CartControl {
     @GetMapping
     public ResponseEntity<Response> getUserCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        com.peak.main.model.Cart cart = cartService.getCartsByUserId(user.getId());
+        Cart cart = cartService.getCartsByUserId(user.getId());
         return ResponseEntity.ok(new Response(cart));
     }
 
@@ -36,7 +37,7 @@ public class CartControl {
             if (quantity <= 0) {
                 throw new IllegalArgumentException("Invalid quantity. Quantity must be greater than 0.");
             }
-            com.peak.main.model.Cart updatedCart = cartService.addToCart(user.getId(), itemId, quantity, type);
+            Cart updatedCart = cartService.addToCart(user.getId(), itemId, quantity, type);
             return  ResponseEntity.status(201).body(new Response(updatedCart));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Item not found with ID: " + itemId));
@@ -58,7 +59,7 @@ public class CartControl {
                 return ResponseEntity.badRequest().body(new Response("Invalid quantity. Quantity must be greater than 0."));
             }
 
-            com.peak.main.model.Cart updatedCart = cartService.updateCart(user.getId(), cartDetailsId, quantity);
+            Cart updatedCart = cartService.updateCart(user.getId(), cartDetailsId, quantity);
             return ResponseEntity.ok(new Response(updatedCart));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(e.getMessage()));
