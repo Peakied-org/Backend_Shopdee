@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -33,6 +34,12 @@ public class UserControlTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private ArrayList<User> users = new ArrayList<>(List.of(
+            new User(1L, "name1", "password1", Role.USER, "1234", "address1", ""),
+            new User(2L, "name2", "password2", Role.SELLER, "12345", "address2", ""),
+            new User(3L, "name3", "password3", Role.ADMIN, "123456", "address3", "")
+    ));
 
     @Test
     void testUnAuthorization() throws Exception {
@@ -92,29 +99,84 @@ public class UserControlTest {
     }
 
     @Test
+    @WithMockUser(authorities = "USER")
+    void testGetUserByUser() throws Exception {
+
+        when(userService.getAllUsers()).thenReturn(users);
+
+        mockMvc.perform(get("/api/v1/customers"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
+    @WithMockUser(authorities = "SELLER")
+    void testGetUserBySeller() throws Exception {
+
+        when(userService.getAllUsers()).thenReturn(users);
+
+        mockMvc.perform(get("/api/v1/customers"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
     @WithMockUser(authorities = "ADMIN")
     void testGetUser() throws Exception {
 
-        ArrayList<User> users = new ArrayList<>();
-        users.add(User.builder().name("name").tel("123").role(Role.USER).build());
+        User user = users.get(0);
 
         when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/api/v1/customers"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.body[0].name").value("name"),
-                        jsonPath("$.body[0].tel").value("123"),
-                        jsonPath("$.body[0].role").value("USER")
+                        jsonPath("$.body[0].name").value(user.getName()),
+                        jsonPath("$.body[0].tel").value(user.getTel()),
+                        jsonPath("$.body[0].role").value(user.getRole().name())
                 );
         verify(userService, times(1)).getAllUsers();
     }
 
     @Test
-    @WithMockUser(authorities = "ADMIN")
-    void testUpdateUser() throws Exception {
+    @WithMockUser(authorities = "USER")
+    void testUpdateUserByUser() throws Exception {
 
-        User user = User.builder().id(1L).name("name").tel("123").role(Role.USER).build();
+        RegisterRequest registerRequest = RegisterRequest.builder().tel("000").build();
+
+        String request = objectMapper.writeValueAsString(registerRequest);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(request))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
+    @WithMockUser(authorities = "SELLER")
+    void testUpdateUserBySeller() throws Exception {
+
+        RegisterRequest registerRequest = RegisterRequest.builder().tel("000").build();
+
+        String request = objectMapper.writeValueAsString(registerRequest);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(request))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
+    @WithMockUser(authorities = "ADMIN")
+    void testUpdateUserByAdmin() throws Exception {
+
+        User user = users.get(0);
 
         RegisterRequest registerRequest = RegisterRequest.builder().tel("000").build();
 
@@ -133,17 +195,37 @@ public class UserControlTest {
                         .content(request))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.body.name").value("name"),
-                        jsonPath("$.body.tel").value("000"),
-                        jsonPath("$.body.role").value("USER")
+                        jsonPath("$.body.name").value(user.getName()),
+                        jsonPath("$.body.tel").value(user.getTel()),
+                        jsonPath("$.body.role").value(user.getRole().name())
                 );
         verify(userService, times(1)).findById(any(long.class));
         verify(userService, times(1)).update(any(User.class), any(RegisterRequest.class));
     }
 
     @Test
+    @WithMockUser(authorities = "USER")
+    void testDeleteUserByUser() throws Exception {
+        doNothing().when(userService).delete(any(User.class));
+        mockMvc.perform(delete("/api/v1/customers/1"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
+    @WithMockUser(authorities = "SELLER")
+    void testDeleteUserBySeller() throws Exception {
+        doNothing().when(userService).delete(any(User.class));
+        mockMvc.perform(delete("/api/v1/customers/1"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @Test
     @WithMockUser(authorities = "ADMIN")
-    void testDeleteUser() throws Exception {
+    void testDeleteUserByAdmin() throws Exception {
         doNothing().when(userService).delete(any(User.class));
         mockMvc.perform(delete("/api/v1/customers/1"))
                 .andExpectAll(
@@ -151,13 +233,4 @@ public class UserControlTest {
                 );
     }
 
-    @Test
-    @WithMockUser(authorities = "USER")
-    void testDeleteUserNotAdmin() throws Exception {
-        doNothing().when(userService).delete(any(User.class));
-        mockMvc.perform(delete("/api/v1/customers/1"))
-                .andExpectAll(
-                        status().isForbidden()
-                );
-    }
 }
