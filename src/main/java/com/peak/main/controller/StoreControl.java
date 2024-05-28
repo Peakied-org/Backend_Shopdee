@@ -49,7 +49,7 @@ public class StoreControl {
     @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
     public ResponseEntity<Response> delete(@PathVariable Long id, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), id)) {
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionStore(user.getId(), id)) {
             storeService.deleteById(id);
             return ResponseEntity.ok(new Response("[]"));
         }
@@ -70,7 +70,7 @@ public class StoreControl {
 
         if (storeService.findById(id).isEmpty()) return ResponseEntity.badRequest().build();
         User user = (User) authentication.getPrincipal();
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionStore(user.getId(), id)) return ResponseEntity.status(201).body(new Response(storeService.saveToStore(item)));
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionStore(user.getId(), id)) return ResponseEntity.status(201).body(new Response(storeService.saveToStore(item)));
 
         return ResponseEntity.status(403).build();
     }
@@ -80,7 +80,7 @@ public class StoreControl {
     public ResponseEntity<Response> updateItem(@PathVariable Long iid, Authentication authentication, @RequestBody RequestItem newItem) {
         User user = (User) authentication.getPrincipal();
 
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionItem(user.getId(), iid)) {
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionItem(user.getId(), iid)) {
             return ResponseEntity.ok(new Response(storeService.updateItem(newItem, iid)));
         }
         return ResponseEntity.status(403).build();
@@ -91,7 +91,7 @@ public class StoreControl {
     public ResponseEntity<Response> deleteItem(@PathVariable Long iid, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
-        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermitionItem(user.getId(), iid)) {
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionItem(user.getId(), iid)) {
             storeService.deleteFromStore(iid);
             return ResponseEntity.ok(new Response("[]"));
         }

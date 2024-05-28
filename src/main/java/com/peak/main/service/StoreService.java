@@ -40,12 +40,12 @@ public class StoreService {
         storeRepository.deleteById(id);
     }
 
-    public boolean hasPermitionStore(long userID, long storeID) {
+    public boolean hasPermissionStore(long userID, long storeID) {
         Optional<Store> store = storeRepository.findByUserID(userID);
         return store.map(value -> value.getId().equals(storeID)).orElse(false);
     }
 
-    public boolean hasPermitionItem(long userID, long itemID) {
+    public boolean hasPermissionItem(long userID, long itemID) {
         Optional<Item> item = itemService.findById(itemID);
         if (item.isEmpty()) return false;
         Optional<Store> store = storeRepository.findById(item.get().getStoreID());
