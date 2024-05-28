@@ -30,7 +30,6 @@ class CouponControlTest {
     @MockBean
     private CouponService couponService;
 
-
     @Autowired
     private ObjectMapper objectMapper;
 

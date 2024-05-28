@@ -43,13 +43,13 @@ public class UserControl {
         return ResponseEntity.ok(new Response(userService.getAllUsers()));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Response> update(@RequestBody RegisterRequest requestUpdate) {
-        User customer = userService.findByName(requestUpdate.getName());
-        if (customer == null) return ResponseEntity.badRequest().build();
+    public ResponseEntity<Response> update(@PathVariable long id, @RequestBody RegisterRequest requestUpdate) {
+        User user = userService.findById(id);
+        if (user == null) return ResponseEntity.badRequest().build();
 
-        return ResponseEntity.ok().body(new Response(userService.update(customer, requestUpdate)));
+        return ResponseEntity.ok().body(new Response(userService.update(user, requestUpdate)));
     }
 
     @DeleteMapping("/{id}")
