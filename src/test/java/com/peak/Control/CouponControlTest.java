@@ -1,5 +1,6 @@
-package com.peak;
+package com.peak.Control;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -7,20 +8,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peak.main.model.Coupon;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import com.peak.main.controller.CouponControl;
 import com.peak.main.service.CouponService;
-import com.peak.security.service.JwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@WebMvcTest(CouponControl.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class CouponControlTest {
 
     @Autowired
@@ -29,8 +30,6 @@ class CouponControlTest {
     @MockBean
     private CouponService couponService;
 
-    @MockBean
-    private JwtService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -67,21 +66,35 @@ class CouponControlTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(authorities = { "ADMIN" })
     void testCreateCouponAsAdmin() throws Exception {
         Coupon coupon = new Coupon(1L, "name", 12, "image1.png");
 
-        when(couponService.save(coupon)).thenReturn(coupon);
+        when(couponService.save(any(Coupon.class))).thenReturn(coupon);
 
         String couponJson = objectMapper.writeValueAsString(coupon);
 
         mockMvc.perform(post("/coupon")
                         .contentType("application/json")
-                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcxNjgxODc5MiwiZXhwIjoxNzE2ODMzMTkyfQ.KXvlenpyekkUebXkEE9Cqukhe1KTKdDbygkpUFlvh0Y\n")
                         .content(couponJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.discount").value(12))
-                .andExpect(jsonPath("$.image").value("image1.png"));
+                .andExpectAll(
+                        jsonPath("$.body.name").value("name"), 
+                        jsonPath("$.body.discount").value(12), 
+                        jsonPath("$.body.image").value("image1.png")
+                );
+    }
+
+    @Test
+    @WithMockUser(authorities = { "USER" })
+    void testCreateCouponAsUser() throws Exception {
+        Coupon coupon = new Coupon(1L, "name", 12, "image1.png");
+
+        String couponJson = objectMapper.writeValueAsString(coupon);
+
+        mockMvc.perform(post("/coupon")
+                        .contentType("application/json")
+                        .content(couponJson))
+                .andExpect(status().isForbidden());
     }
 }

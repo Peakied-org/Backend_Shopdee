@@ -1,4 +1,4 @@
-package com.peak;
+package com.peak.Service;
 
 import com.peak.main.model.Coupon;
 import com.peak.main.repository.CouponRepository;
@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
 class CouponServiceTest {
 
     @Mock
