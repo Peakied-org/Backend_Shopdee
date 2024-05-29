@@ -75,6 +75,7 @@ public class StoreControlTest {
                         jsonPath("$.body[2].name").value("name3"),
                         jsonPath("$.body[2].userID").value(13)
                 );
+        verify(storeService, times(1)).findAll();
     }
 
     @Test
@@ -111,6 +112,7 @@ public class StoreControlTest {
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isForbidden());
+        verify(storeService, times(0)).save(any(Store.class));
     }
 
     @Test
@@ -172,6 +174,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).deleteById(any(long.class));
     }
 
     @Test
@@ -199,6 +202,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).deleteById(any(long.class));
     }
 
     @Test
@@ -228,6 +232,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).saveToStore(any(RequestItem.class));
     }
 
     @Test
@@ -277,6 +282,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).saveToStore(any(RequestItem.class));
     }
 
     @Test
@@ -323,6 +329,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).updateItem(any(RequestItem.class), any(long.class));
     }
 
     @Test
@@ -372,6 +379,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).updateItem(any(RequestItem.class), any(long.class));
     }
 
     @Test
@@ -411,6 +419,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).deleteFromStore(any(long.class));
     }
 
     @Test
@@ -440,6 +449,7 @@ public class StoreControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(storeService, times(0)).deleteFromStore(any(long.class));
     }
 
     @Test

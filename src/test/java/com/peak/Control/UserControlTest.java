@@ -108,6 +108,7 @@ public class UserControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).getAllUsers();
     }
 
     @Test
@@ -120,6 +121,7 @@ public class UserControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).getAllUsers();
     }
 
     @Test
@@ -154,6 +156,7 @@ public class UserControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).update(any(User.class), any(RegisterRequest.class));
     }
 
     @Test
@@ -170,6 +173,7 @@ public class UserControlTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).update(any(User.class), any(RegisterRequest.class));
     }
 
     @Test
@@ -199,38 +203,40 @@ public class UserControlTest {
                         jsonPath("$.body.tel").value(user.getTel()),
                         jsonPath("$.body.role").value(user.getRole().name())
                 );
-        verify(userService, times(1)).findById(any(long.class));
         verify(userService, times(1)).update(any(User.class), any(RegisterRequest.class));
     }
 
     @Test
     @WithMockUser(authorities = "USER")
     void testDeleteUserByUser() throws Exception {
-        doNothing().when(userService).delete(any(User.class));
+        doNothing().when(userService).deleteById(any(long.class));
         mockMvc.perform(delete("/api/v1/customers/1"))
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).deleteById(any(long.class));
     }
 
     @Test
     @WithMockUser(authorities = "SELLER")
     void testDeleteUserBySeller() throws Exception {
-        doNothing().when(userService).delete(any(User.class));
+        doNothing().when(userService).deleteById(any(long.class));
         mockMvc.perform(delete("/api/v1/customers/1"))
                 .andExpectAll(
                         status().isForbidden()
                 );
+        verify(userService, times(0)).deleteById(any(long.class));
     }
 
     @Test
     @WithMockUser(authorities = "ADMIN")
     void testDeleteUserByAdmin() throws Exception {
-        doNothing().when(userService).delete(any(User.class));
+        doNothing().when(userService).deleteById(any(long.class));
         mockMvc.perform(delete("/api/v1/customers/1"))
                 .andExpectAll(
                         status().isOk()
                 );
+        verify(userService, times(1)).deleteById(any(long.class));
     }
 
 }
