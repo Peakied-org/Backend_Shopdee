@@ -26,7 +26,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/v1/auth/**", "/store/**", "/coupon/**", "/item/**", "/promotion/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/store/**", "/coupon/**", "/item/**", "/promotion/**", "/error").permitAll()  // Permit access to /error
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
