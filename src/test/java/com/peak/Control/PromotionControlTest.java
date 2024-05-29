@@ -1,7 +1,6 @@
 package com.peak.Control;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.peak.main.controller.PromotionControl;
 import com.peak.main.model.Promotion;
 import com.peak.main.service.PromotionService;
 import org.junit.jupiter.api.Test;
