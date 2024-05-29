@@ -166,28 +166,96 @@ public class StoreControlTest {
     }
 
     @Test
-    @WithUserDetails("seller")
-    @WithMockUser(authorities = { "SELLER" })
-    void testUpdateStoreBySeller() throws Exception {
+    @WithUserDetails("user")
+    @WithMockUser(authorities = { "USER" })
+    void testUpdateStoreByUser() throws Exception {
 
-        Store create = new Store(4L, "newName", 14L, "detail4", "image4", "banner4", new ArrayList<>());
+        Store create = new Store(null, "newName", null, null, null, null, new ArrayList<>());
 
-        when(storeService.save(any(Store.class))).thenReturn(create);
+        when(storeService.findById(any(long.class))).then(invocationOnMock -> stores.stream().filter(store -> store.getId().equals(invocationOnMock.getArgument(0))).findFirst());
+
+        when(storeService.hasPermissionStore(any(long.class), any(long.class))).thenReturn(true);
+
+        when(storeService.update(any(Store.class), any(Store.class))).thenReturn(create);
 
         String json = objectMapper.writeValueAsString(create);
 
-        mockMvc.perform(post("/store/me")
+        mockMvc.perform(put("/store/3")
                         .contentType("application/json")
                         .content(json))
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden());
+        verify(storeService, times(0)).update(any(Store.class), any(Store.class));
+    }
+
+    @Test
+    @WithUserDetails("seller")
+    @WithMockUser(authorities = { "SELLER" })
+    void testUpdateStoreByCorrectSeller() throws Exception {
+
+        Store create = new Store(null, "newName", null, null, null, null, new ArrayList<>());
+
+        when(storeService.findById(any(long.class))).then(invocationOnMock -> stores.stream().filter(store -> store.getId().equals(invocationOnMock.getArgument(0))).findFirst());
+
+        when(storeService.hasPermissionStore(any(long.class), any(long.class))).thenReturn(true);
+
+        when(storeService.update(any(Store.class), any(Store.class))).thenReturn(create);
+
+        String json = objectMapper.writeValueAsString(create);
+
+        mockMvc.perform(put("/store/3")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.body.name").value("newName"),
-                        jsonPath("$.body.userID").value(14),
-                        jsonPath("$.body.detail").value("detail4"),
-                        jsonPath("$.body.image").value("image4"),
-                        jsonPath("$.body.banner").value("banner4")
+                        jsonPath("$.body.name").value("newName")
                 );
-        verify(storeService, times(1)).save(any(Store.class));
+        verify(storeService, times(1)).update(any(Store.class), any(Store.class));
+    }
+
+    @Test
+    @WithUserDetails("seller")
+    @WithMockUser(authorities = { "SELLER" })
+    void testUpdateStoreByIncorrectSeller() throws Exception {
+
+        Store create = new Store(null, "newName", null, null, null, null, new ArrayList<>());
+
+        when(storeService.findById(any(long.class))).then(invocationOnMock -> stores.stream().filter(store -> store.getId().equals(invocationOnMock.getArgument(0))).findFirst());
+
+        when(storeService.hasPermissionStore(any(long.class), any(long.class))).thenReturn(false);
+
+        when(storeService.update(any(Store.class), any(Store.class))).thenReturn(create);
+
+        String json = objectMapper.writeValueAsString(create);
+
+        mockMvc.perform(put("/store/3")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isForbidden());
+        verify(storeService, times(0)).update(any(Store.class), any(Store.class));
+    }
+
+
+    @Test
+    @WithUserDetails("admin")
+    @WithMockUser(authorities = { "ADMIN" })
+    void testUpdateStoreByAdmin() throws Exception {
+
+        Store create = new Store(null, "newName", null, null, null, null, new ArrayList<>());
+
+        when(storeService.findById(any(long.class))).then(invocationOnMock -> stores.stream().filter(store -> store.getId().equals(invocationOnMock.getArgument(0))).findFirst());
+
+        when(storeService.update(any(Store.class), any(Store.class))).thenReturn(create);
+
+        String json = objectMapper.writeValueAsString(create);
+
+        mockMvc.perform(put("/store/3")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.body.name").value("newName")
+                );;
+        verify(storeService, times(1)).update(any(Store.class), any(Store.class));
     }
 
     @Test

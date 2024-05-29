@@ -86,6 +86,19 @@ public class StoreServiceTest {
     }
 
     @Test
+    void TestUpdateStore() {
+
+        Store newStore = stores.get(0);
+        newStore.setName("newName");
+
+        when(storeRepository.save(any(Store.class))).then(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        assertEquals(newStore, storeService.update(stores.get(0), newStore));
+
+        verify(storeRepository, times(1)).save(any(Store.class));
+    }
+
+    @Test
     void TestDeleteStore() {
 
         doNothing().when(storeRepository).deleteById(any(long.class));
