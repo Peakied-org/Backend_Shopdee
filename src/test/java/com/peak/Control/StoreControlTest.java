@@ -166,6 +166,31 @@ public class StoreControlTest {
     }
 
     @Test
+    @WithUserDetails("seller")
+    @WithMockUser(authorities = { "SELLER" })
+    void testUpdateStoreBySeller() throws Exception {
+
+        Store create = new Store(4L, "newName", 14L, "detail4", "image4", "banner4", new ArrayList<>());
+
+        when(storeService.save(any(Store.class))).thenReturn(create);
+
+        String json = objectMapper.writeValueAsString(create);
+
+        mockMvc.perform(post("/store/me")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andExpectAll(
+                        jsonPath("$.body.name").value("newName"),
+                        jsonPath("$.body.userID").value(14),
+                        jsonPath("$.body.detail").value("detail4"),
+                        jsonPath("$.body.image").value("image4"),
+                        jsonPath("$.body.banner").value("banner4")
+                );
+        verify(storeService, times(1)).save(any(Store.class));
+    }
+
+    @Test
     @WithUserDetails("user")
     @WithMockUser(authorities = { "USER" })
     void testDeleteStoreByUser() throws Exception {

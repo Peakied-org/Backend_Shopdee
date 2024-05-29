@@ -47,15 +47,19 @@ public class StoreControl {
         return ResponseEntity.status(201).body(new Response(storeService.save(store)));
     }
 
-    @PutMapping("/me")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    public ResponseEntity<Response> updateStore(@RequestBody Store newStore, Authentication authentication) {
+    public ResponseEntity<Response> updateStore(@PathVariable long id, @RequestBody Store newStore, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
         Optional<Store> findStore = storeService.findByUserId(user.getId());
         if (findStore.isEmpty()) return ResponseEntity.badRequest().body(new Response("Dont have store"));
 
-        return ResponseEntity.status(201).body(new Response(storeService.update(findStore.get(), newStore)));
+        if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionStore(user.getId(), id)) {
+            return ResponseEntity.status(200).body(new Response(storeService.update(findStore.get(), newStore)));
+        }
+
+        return ResponseEntity.status(403).build();
     }
 
     @DeleteMapping("/{id}")
