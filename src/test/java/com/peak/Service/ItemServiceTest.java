@@ -1,6 +1,8 @@
 package com.peak.Service;
 
+import com.peak.main.model.Image;
 import com.peak.main.model.Item;
+import com.peak.main.model.Type;
 import com.peak.main.repository.ImageRepository;
 import com.peak.main.repository.ItemRepository;
 import com.peak.main.repository.TypeRepository;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
-public class ItemServiceTest {
+class ItemServiceTest {
 
     @Mock
     private ItemRepository itemRepository;
@@ -69,6 +71,10 @@ public class ItemServiceTest {
 
         Item item = items.get(0);
         item.setName("name4");
+
+        when(typeRepository.save(any(Type.class))).then(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        when(imageRepository.save(any(Image.class))).then(invocationOnMock -> invocationOnMock.getArgument(0));
 
         when(itemService.findById(any(long.class))).then(invocationOnMock -> items.stream().filter(item1 -> item1.getId() == invocationOnMock.getArgument(0)).findFirst());
 

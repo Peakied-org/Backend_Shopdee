@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
-public class StoreServiceTest {
+class StoreServiceTest {
 
     @Mock
     private StoreRepository storeRepository;
@@ -142,9 +142,12 @@ public class StoreServiceTest {
     @Test
     void TestSaveToStore() {
 
-        when(storeRepository.save(any(Store.class))).thenReturn(stores.get(0));
+        Item item = new Item(21L, "name", 1L, 12, 12, "category", "detail", 1, 1, new ArrayList<>(), new ArrayList<>());
+        RequestItem requestItem = new RequestItem("name", 1L, 12, 12, "category", "detail", 1, 1, new ArrayList<>(), new ArrayList<>());
 
-        assertEquals(stores.get(0), storeService.save(stores.get(0)));
+        when(itemRepository.save(any(Item.class))).then(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        assertEquals(item, storeService.saveToStore(requestItem));
 
         verify(storeRepository, times(1)).save(any(Store.class));
     }
@@ -152,9 +155,9 @@ public class StoreServiceTest {
     @Test
     void TestDeleteFromStore() {
 
-        doNothing().when(storeRepository).deleteById(any(long.class));
+        doNothing().when(itemService).deleteById(any(long.class));
 
-        storeRepository.deleteById(1L);
+        storeService.deleteFromStore(1L);
 
         verify(storeRepository, times(1)).deleteById(any(long.class));
     }
@@ -166,11 +169,9 @@ public class StoreServiceTest {
 
         when(itemService.updateItem(any(RequestItem.class), anyLong())).thenReturn(expectedItem);
 
-        // Act
         Item actualItem = storeService.updateItem(RequestItem.builder().name("newName").build(), 1L);
 
-        // Assert
-        assertEquals("newName", actualItem.getName());  // Verify the result of the updateItem method
+        assertEquals("newName", actualItem.getName());
         verify(itemService, times(1)).updateItem(any(RequestItem.class), any(long.class));
     }
 }

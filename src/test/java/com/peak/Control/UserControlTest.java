@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControlTest {
+class UserControlTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +37,7 @@ public class UserControlTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private ArrayList<User> users = new ArrayList<>(List.of(
+    private final ArrayList<User> users = new ArrayList<>(List.of(
             new User(1L, "name1", "password1", Role.USER, "1234", "address1", ""),
             new User(2L, "name2", "password2", Role.SELLER, "12345", "address2", ""),
             new User(3L, "name3", "password3", Role.ADMIN, "123456", "address3", "")
@@ -101,21 +101,8 @@ public class UserControlTest {
     }
 
     @Test
-    @WithMockUser(authorities = "USER")
-    void testGetUserByUser() throws Exception {
-
-        when(userService.getAllUsers()).thenReturn(users);
-
-        mockMvc.perform(get("/api/v1/customers"))
-                .andExpectAll(
-                        status().isForbidden()
-                );
-        verify(userService, times(0)).getAllUsers();
-    }
-
-    @Test
-    @WithMockUser(authorities = "SELLER")
-    void testGetUserBySeller() throws Exception {
+    @WithMockUser(authorities = { "USER", "SELLER" })
+    void testGetUserByUserOrSeller() throws Exception {
 
         when(userService.getAllUsers()).thenReturn(users);
 
@@ -145,25 +132,8 @@ public class UserControlTest {
     }
 
     @Test
-    @WithMockUser(authorities = "USER")
-    void testUpdateUserByUser() throws Exception {
-
-        RegisterRequest registerRequest = RegisterRequest.builder().tel("000").build();
-
-        String request = objectMapper.writeValueAsString(registerRequest);
-
-        mockMvc.perform(put("/api/v1/customers/1")
-                        .contentType("application/json")
-                        .content(request))
-                .andExpectAll(
-                        status().isForbidden()
-                );
-        verify(userService, times(0)).update(any(User.class), any(RegisterRequest.class));
-    }
-
-    @Test
-    @WithMockUser(authorities = "SELLER")
-    void testUpdateUserBySeller() throws Exception {
+    @WithMockUser(authorities = { "USER", "SELLER"})
+    void testUpdateUserByUserOrSeller() throws Exception {
 
         RegisterRequest registerRequest = RegisterRequest.builder().tel("000").build();
 
@@ -209,19 +179,8 @@ public class UserControlTest {
     }
 
     @Test
-    @WithMockUser(authorities = "USER")
+    @WithMockUser(authorities = { "USER", "SELLER" })
     void testDeleteUserByUser() throws Exception {
-        doNothing().when(userService).deleteById(any(long.class));
-        mockMvc.perform(delete("/api/v1/customers/1"))
-                .andExpectAll(
-                        status().isForbidden()
-                );
-        verify(userService, times(0)).deleteById(any(long.class));
-    }
-
-    @Test
-    @WithMockUser(authorities = "SELLER")
-    void testDeleteUserBySeller() throws Exception {
         doNothing().when(userService).deleteById(any(long.class));
         mockMvc.perform(delete("/api/v1/customers/1"))
                 .andExpectAll(

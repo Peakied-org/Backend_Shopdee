@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class StoreControlTest {
+class StoreControlTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +43,7 @@ public class StoreControlTest {
             new Store(1L, "name1", 11L, "detail1", "image1", "banner1", new ArrayList<>()),
             new Store(2L, "name2", 12L, "detail2", "image2", "banner2", new ArrayList<>()),
             new Store(3L, "name3", 13L, "detail3", "image3", "banner3", new ArrayList<>())
-    )); ;
+    ));
 
     private final Item item = Item.builder()
             .name("name")
@@ -100,7 +100,7 @@ public class StoreControlTest {
     }
 
     @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = { "USER" })
     void testCreateStoreByUser() throws Exception {
 
@@ -119,8 +119,8 @@ public class StoreControlTest {
 
     @Test
     @WithUserDetails("seller")
-    @WithMockUser(authorities = { "SELLER" })
-    void testCreateStoreBySeller() throws Exception {
+    @WithMockUser(authorities = { "SELLER", "ADMIN" })
+    void testCreateStoreBySellerOrAdmin() throws Exception {
 
         Store create = new Store(4L, "name3", 14L, "detail4", "image4", "banner4", new ArrayList<>());
 
@@ -143,32 +143,7 @@ public class StoreControlTest {
     }
 
     @Test
-    @WithUserDetails("admin")
-    @WithMockUser(authorities = { "ADMIN" })
-    void testCreateStoreByAdmin() throws Exception {
-
-        Store create = new Store(4L, "name3", 14L, "detail4", "image4", "banner4", new ArrayList<>());
-
-        when(storeService.save(any(Store.class))).thenReturn(create);
-
-        String json = objectMapper.writeValueAsString(create);
-
-        mockMvc.perform(post("/store/me")
-                        .contentType("application/json")
-                        .content(json))
-                .andExpect(status().isCreated())
-                .andExpectAll(
-                        jsonPath("$.body.name").value("name3"),
-                        jsonPath("$.body.userID").value(14),
-                        jsonPath("$.body.detail").value("detail4"),
-                        jsonPath("$.body.image").value("image4"),
-                        jsonPath("$.body.banner").value("banner4")
-                );
-        verify(storeService, times(1)).save(any(Store.class));
-    }
-
-    @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = { "USER" })
     void testUpdateStoreByUser() throws Exception {
 
@@ -256,12 +231,12 @@ public class StoreControlTest {
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$.body.name").value("newName")
-                );;
+                );
         verify(storeService, times(1)).update(any(Store.class), any(Store.class));
     }
 
     @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = { "USER" })
     void testDeleteStoreByUser() throws Exception {
 
@@ -313,7 +288,7 @@ public class StoreControlTest {
     }
 
     @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = { "USER" })
     void testAddItemToStoreByUser() throws Exception {
 
@@ -407,7 +382,7 @@ public class StoreControlTest {
     }
 
     @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = "USER")
     void testUpdateItemToStoreByUser() throws Exception {
 
@@ -504,7 +479,7 @@ public class StoreControlTest {
 
 
     @Test
-    @WithUserDetails("user")
+    @WithUserDetails
     @WithMockUser(authorities = "USER")
     void testDeleteItemByUser() throws Exception {
 

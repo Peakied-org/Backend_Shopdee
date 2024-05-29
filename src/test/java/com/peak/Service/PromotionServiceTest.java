@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
-public class PromotionServiceTest {
+class PromotionServiceTest {
 
     @Mock
     private PromotionRepository promotionRepository;

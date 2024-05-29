@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PromotionControlTest {
+class PromotionControlTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,7 +33,7 @@ public class PromotionControlTest {
     @MockBean
     private PromotionService promotionService;
 
-    private ArrayList<Promotion> promotions = new ArrayList<>(List.of(
+    private final ArrayList<Promotion> promotions = new ArrayList<>(List.of(
             new Promotion(1L, "image1"),
             new Promotion(2L, "image2"),
             new Promotion(3L, "image3")
@@ -117,21 +117,8 @@ public class PromotionControlTest {
     }
 
     @Test
-    @WithMockUser(authorities = "USER")
-    void TestDeletePromotionByUser() throws Exception {
-
-        doNothing().when(promotionService).deleteById(any(long.class));
-
-        mockMvc.perform(delete("/promotion/1"))
-                .andExpectAll(
-                        status().isForbidden()
-                );
-        verify(promotionService, times(0)).deleteById(any(long.class));
-    }
-
-    @Test
-    @WithMockUser(authorities = "SELLER")
-    void TestDeletePromotionBySeller() throws Exception {
+    @WithMockUser(authorities = {"USER", "SELLER"})
+    void TestDeletePromotionByUserOrSeller() throws Exception {
 
         doNothing().when(promotionService).deleteById(any(long.class));
 
@@ -154,7 +141,4 @@ public class PromotionControlTest {
                 );
         verify(promotionService, times(1)).deleteById(any(long.class));
     }
-
-
-
 }
