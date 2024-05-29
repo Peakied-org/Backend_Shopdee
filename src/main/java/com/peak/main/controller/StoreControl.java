@@ -52,7 +52,7 @@ public class StoreControl {
     public ResponseEntity<Response> updateStore(@PathVariable long id, @RequestBody Store newStore, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
-        Optional<Store> findStore = storeService.findByUserId(user.getId());
+        Optional<Store> findStore = storeService.findById(id);
         if (findStore.isEmpty()) return ResponseEntity.badRequest().body(new Response("Dont have store"));
 
         if (user.getRole().equals(Role.ADMIN) || storeService.hasPermissionStore(user.getId(), id)) {
