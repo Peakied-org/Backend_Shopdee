@@ -36,6 +36,16 @@ public class StoreService {
         return storeRepository.findById(id);
     }
 
+    public Store update(Store store, Store newStore) {
+
+        if (newStore.getName() != null) store.setName(newStore.getName());
+        if (newStore.getDetail() != null) store.setDetail(newStore.getDetail());
+        if (newStore.getImage() != null) store.setImage(newStore.getImage());
+        if (newStore.getBanner() != null) store.setBanner(newStore.getBanner());
+
+        return storeRepository.save(store);
+    }
+
     public void deleteById(long id) {
         storeRepository.deleteById(id);
     }

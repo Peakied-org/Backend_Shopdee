@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/store")
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class StoreControl {
 
     @PostMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    public ResponseEntity<Response> add(@RequestBody Store store, Authentication authentication) {
+    public ResponseEntity<Response> addStore(@RequestBody Store store, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         if (storeService.findByUserId(user.getId()).isPresent()) return ResponseEntity.ok(new Response("Already exists"));
         if (store.getName() == null ||
@@ -43,6 +45,17 @@ public class StoreControl {
         store.setUserID(user.getId());
 
         return ResponseEntity.status(201).body(new Response(storeService.save(store)));
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
+    public ResponseEntity<Response> updateStore(@RequestBody Store newStore, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        Optional<Store> findStore = storeService.findByUserId(user.getId());
+        if (findStore.isEmpty()) return ResponseEntity.badRequest().body(new Response("Dont have store"));
+
+        return ResponseEntity.status(201).body(new Response(storeService.update(findStore.get(), newStore)));
     }
 
     @DeleteMapping("/{id}")
