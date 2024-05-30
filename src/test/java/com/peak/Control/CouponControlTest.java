@@ -1,7 +1,7 @@
 package com.peak.Control;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,6 +64,7 @@ class CouponControlTest {
                     jsonPath("$.body[2].discount").value(14),
                     jsonPath("$.body[2].image").value("image3.png")
                 );
+        verify(couponService, times(1)).findAll();
     }
 
     @Test
@@ -84,6 +85,7 @@ class CouponControlTest {
                         jsonPath("$.body.discount").value(12), 
                         jsonPath("$.body.image").value("image1.png")
                 );
+        verify(couponService, times(1)).save(any(Coupon.class));
     }
 
     @Test
@@ -98,4 +100,27 @@ class CouponControlTest {
                         .content(couponJson))
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    @WithMockUser(authorities = { "ADMIN" })
+    void testCreateCouponAsAdmin_InvalidInput() throws Exception {
+        Coupon invalidCoupon = new Coupon(null, null, null, null);
+
+        mockMvc.perform(post("/coupon")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(invalidCoupon)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = { "ADMIN" })
+    void testDeleteCouponAsAdmin_Success() throws Exception {
+        long couponId = 1L;
+        doNothing().when(couponService).deleteById(couponId);
+        mockMvc.perform(delete("/coupon/{id}", couponId))
+                .andExpect(status().isOk());
+
+        verify(couponService, times(1)).deleteById(couponId);
+    }
+
 }
