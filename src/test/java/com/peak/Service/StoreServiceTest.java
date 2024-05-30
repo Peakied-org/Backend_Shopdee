@@ -159,7 +159,7 @@ class StoreServiceTest {
 
         storeService.deleteFromStore(1L);
 
-        verify(itemServiceitad, times(1)).deleteById(any(long.class));
+        verify(itemService, times(1)).deleteById(any(long.class));
     }
 
     @Test
