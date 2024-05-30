@@ -35,7 +35,7 @@ public class OrderControl {
                 break;
             case SELLER:
                 try {
-                    orders = orderService.getOrderDetailsBySeller(user);
+                    orders = orderService.getOrdersByUserId(user.getId());
                 } catch (EntityNotFoundException e) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Store not found for user"));
                 }

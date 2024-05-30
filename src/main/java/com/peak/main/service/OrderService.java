@@ -23,19 +23,10 @@ public class OrderService {
 
     private final CartRepository cartRepository;
 
-    // For ADMIN
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    // For SELLER
-    public List<OrderDetails> getOrderDetailsBySeller(User seller) {
-        Store store = storeRepository.findByUserID(seller.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Store not found for user"));
-        return orderDetailsRepository.findByStoreID(store.getId());
-    }
-
-    // For USER
     public List<Order> getOrdersByUserId(Long userId) {
         return orderRepository.findByUserID(userId);
     }
@@ -63,7 +54,7 @@ public class OrderService {
         return savedOrder;
     }
 
-    private static OrderDetails getOrderDetails(CartDetails cartDetail, Order savedOrder) {
+    public static OrderDetails getOrderDetails(CartDetails cartDetail, Order savedOrder) {
         OrderDetails orderDetail = new OrderDetails();
         orderDetail.setName(cartDetail.getName());
         orderDetail.setQuantity(cartDetail.getQuantity());

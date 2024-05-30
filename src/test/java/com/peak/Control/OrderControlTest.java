@@ -3,7 +3,6 @@ package com.peak.Control;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peak.main.model.Order;
 import com.peak.main.model.OrderDetails;
-import com.peak.main.model.User;
 import com.peak.main.request.Response;
 import com.peak.main.service.OrderService;
 import com.peak.util.Status;
@@ -68,17 +67,6 @@ class OrderControlTest {
                 .andExpect(content().json(expectedJson));
     }
 
-    @Test
-    @WithUserDetails("seller")
-    @WithMockUser(authorities = { "SELLER" })
-    void testSellerGetOrders() throws Exception {
-        when(orderService.getOrderDetailsBySeller(any(User.class))).thenReturn(List.of(orderDetails));
-        String expectedJson = objectMapper.writeValueAsString(new Response(List.of(orderDetails)));
-        mockMvc.perform(get("/order"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(content().json(expectedJson));
-    }
 
     @Test
     @WithUserDetails
