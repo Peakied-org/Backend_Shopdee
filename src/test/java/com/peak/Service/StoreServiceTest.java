@@ -145,11 +145,11 @@ class StoreServiceTest {
         Item item = new Item(21L, "name", 1L, 12, 12, "category", "detail", 1, 1, new ArrayList<>(), new ArrayList<>());
         RequestItem requestItem = new RequestItem("name", 1L, 12, 12, "category", "detail", 1, 1, new ArrayList<>(), new ArrayList<>());
 
-        when(itemRepository.save(any(Item.class))).then(invocationOnMock -> invocationOnMock.getArgument(0));
+        when(itemService.save(any(RequestItem.class))).thenReturn(item);
 
         assertEquals(item, storeService.saveToStore(requestItem));
 
-        verify(storeRepository, times(1)).save(any(Store.class));
+        verify(itemService, times(1)).save(any(RequestItem.class));
     }
 
     @Test
@@ -159,7 +159,7 @@ class StoreServiceTest {
 
         storeService.deleteFromStore(1L);
 
-        verify(storeRepository, times(1)).deleteById(any(long.class));
+        verify(itemServiceitad, times(1)).deleteById(any(long.class));
     }
 
     @Test
