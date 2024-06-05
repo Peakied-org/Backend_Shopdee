@@ -27,6 +27,13 @@ public class StoreControl {
         return ResponseEntity.ok(new Response(storeService.findAll()));
     }
 
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
+    @GetMapping("/me")
+    public ResponseEntity<Response> getByUserId(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(new Response(storeService.findByUserId(user.getId())));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response> get(@PathVariable long id) {
         return ResponseEntity.ok(new Response(storeService.findById(id)));
