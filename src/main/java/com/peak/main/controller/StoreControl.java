@@ -27,8 +27,8 @@ public class StoreControl {
         return ResponseEntity.ok(new Response(storeService.findAll()));
     }
 
-    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     public ResponseEntity<Response> getByUserId(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok(new Response(storeService.findByUserId(user.getId())));

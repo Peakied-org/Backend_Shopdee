@@ -81,6 +81,62 @@ class StoreControlTest {
     }
 
     @Test
+    @WithUserDetails("user")
+    @WithMockUser(authorities = "USER")
+    void testGetMyStoreByUser() throws Exception {
+
+        when(storeService.findByUserId(any(long.class))).thenReturn(
+                stores.stream().filter(store -> store.getUserID().equals(11L)).findFirst()
+        );
+
+        mockMvc.perform(get("/store/me"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+        verify(storeService, times(0)).findByUserId(any(long.class));
+    }
+
+    @Test
+    @WithUserDetails("seller")
+    @WithMockUser(authorities = "SELLER")
+    void testGetMyStoreBySeller() throws Exception {
+
+        when(storeService.findByUserId(any(long.class))).thenReturn(
+                stores.stream().filter(store -> store.getUserID().equals(11L)).findFirst()
+        );
+
+        mockMvc.perform(get("/store/me"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("$.body.id").value(1),
+                        jsonPath("$.body.name").value("name1"),
+                        jsonPath("$.body.userID").value(11)
+                );
+        verify(storeService, times(1)).findByUserId(any(long.class));
+    }
+
+    @Test
+    @WithUserDetails("admin")
+    @WithMockUser(authorities = "ADMIN")
+    void testGetMyStoreByAdmin() throws Exception {
+
+        when(storeService.findByUserId(any(long.class))).thenReturn(
+                stores.stream().filter(store -> store.getUserID().equals(11L)).findFirst()
+        );
+
+        mockMvc.perform(get("/store/me"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType("application/json"),
+                        jsonPath("$.body.id").value(1),
+                        jsonPath("$.body.name").value("name1"),
+                        jsonPath("$.body.userID").value(11)
+                );
+        verify(storeService, times(1)).findByUserId(any(long.class));
+    }
+
+    @Test
     @WithMockUser
     void testGetStoreById() throws Exception {
 
